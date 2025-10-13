@@ -46,17 +46,21 @@ void inserir(Tree **raiz, int info)
 	}
 }
 
-
-//quantidade de nó na arvore
-
-
-//localiza nó na arvore
-
-
-//inserir um valor na arvore ABB de maneira INTERATIVA
-
-
 //inserir um valor na arvore ABB de maneira RECURSIVA
+
+
+//quantidade de nó na arvore RECURSIVO - pós ordem
+void quantidadeNo(Tree *raiz, int *qtde)
+{
+	if(raiz != NULL)
+	{
+		quantidadeNo(raiz->esq, &*qtde);
+		quantidadeNo(raiz->dir, &*qtde);
+		(*qtde)++;
+	}
+}
+
+//quantidade de nó na arvore INTERATIVO
 
 
 //buscar um nó da arvore de maneira INTERATIVA
