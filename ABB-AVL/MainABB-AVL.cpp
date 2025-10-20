@@ -3,12 +3,60 @@
 #include<ctype.h>
 #include<string.h>
 
+#include "pilha.h"
+
 struct tree
 {
 	int info;
 	struct tree *esq, *dir;
 };
 typedef struct tree Tree;
+
+// --- tad da minha pilha ---
+
+//estrutura da pilha
+struct TpPilha
+{
+	Tree *no;
+	struct TpPilha *prox;
+};
+typedef struct TpPilha Pilha;
+
+//funcao que inicializa minha pilha
+void initPilha(Pilha **p)
+{
+	*p = NULL;
+}
+
+//funcao que verifica se a pilha e vazia
+char isEmptyPilha(Pilha *p)
+{
+	return p == NULL;
+}
+
+//funcao que insere na pilha
+void push(Pilha **p, Tree *raiz)
+{
+	Pilha *nova = (Pilha*)malloc(sizeof(Pilha));
+	nova->no = raiz;
+	nova->prox = *p;
+	*p = nova;
+}
+
+//funcao que retira da pilha
+void pop(Pilha **p, Tree **raiz)
+{
+	if(!isEmpty(*p))
+	{
+		Pilha *aux = *p;
+		*raiz = (*p)->no;
+		*p = (*p)->prox;
+		free(aux);
+	}
+}
+
+
+// --- tad da minha arvore ABB ---
 
 //funcao que cria um novo nó para arvore
 Tree *criaNo(int info)
