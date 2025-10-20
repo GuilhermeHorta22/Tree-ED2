@@ -145,13 +145,10 @@ void quantidadeNoInt(Tree *raiz, int *qtde) //utiliza o pre ordem interativo
 }
 
 //buscar um nó da arvore de maneira INTERATIVA
-void buscarNo(Tree *raiz, int info, Tree **no)
+Tree *buscarNo(Tree *raiz, int info)
 {	
 	if(raiz == NULL)
-	{
-		printf("\nArvore vazia!");
-		*no = NULL;
-	}
+		return NULL;
 	else
 	{
 		while(raiz != NULL && info != raiz->info)
@@ -162,9 +159,9 @@ void buscarNo(Tree *raiz, int info, Tree **no)
 				raiz = raiz->esq;
 		}
 		if(raiz != NULL && info == raiz->info)
-			*no = raiz;
+			return raiz;
 		else
-			*no = NULL;
+			return NULL;
 	}
 }
 
@@ -196,7 +193,108 @@ void buscarPai(Tree *raiz, int info, Tree **pai)
 }
 
 //buscar um nó na arvore de maneira RECURSIVA
+void buscarNoRec(Tree *raiz, int info, Tree **no)
+{
+	if(raiz != NULL)
+	{
+		if(info == raiz->info)
+			*no = raiz;
+		else
+		if(info > raiz->info)
+			buscarNoRec(raiz->dir, info, &*no);
+		else
+			buscarNoRec(raiz->esq, info, &*no);
+	}
+}
 
+/*
+		Ligacoes para ser tratadas:
+		1- e é folha
+			1.1- e != pai
+				1.1.1- e->info > pai->info (lado direito)
+					pai->dir = NULL;
+					free(e);
+		
+				1.1.2- e->info < pai->info (lado esquerdo)
+					pai->esq = NULL;
+					free(e);
+		
+			1.2- e == pai
+				*raiz = NULL;
+				free(e);
+		
+		2- e tem 1 filho
+			2.1- e != pai
+				2.1.1- e->info > pai->info
+					2.1.1.1- e->esq != NULL
+						pai->dir = e->esq;
+						free(e);
+					
+					2.1.1.2- e->dir != NULL
+						pai->dir = e->dir;
+						free(e);
+						
+				2.1.2- e->info < pai->info
+					2.1.2.1- e->esq != NULL
+						pai->esq = e->esq;
+						free(e);
+					
+					2.1.2.2- e->dir != NULL
+						pai->esq = pai->dir;
+						free(e);
+			2.2- e == pai
+				2.2.1- e->esq != NULL
+					*raiz = e->esq;
+					free(e);
+					
+				2.2.2- e->dir != NULL
+				*raiz = e->dir;
+				free(e);
+		
+		3- e tem 2 filhos
+		else
+		{
+			paiSub = e;
+			sub = e->dir;
+			while(sub->esq != NULL)
+			{
+				paiSub = sub;
+				sub = sub->esq;
+			}
+			aux = sub->info;
+			exclusao(&*raiz, sub, paiSub);
+			e->info = aux;
+		}
+					
+			
+quando um no tem 2 filhos e a exclusao for para o lado esquerdo temos que procurar o maior no do lado
+esquerdo e se caso for para direita temos que procurar o menor no da direita do no
+*/
+
+//excluir um nodo da arvore
+
+//funcao que exibe uma arvore montada
+void exibe(Tree *raiz, int x, int y, int dist)
+{
+	if(raiz != NULL)
+	{
+		gotoxy(x,y);
+		printf("%d",raiz->info);
+		
+		if(raiz->esq != NULL)
+		{
+			gotoxy(x-dist/2,y+1);
+			printf("/");
+		}
+		if(raiz->dir != NULL)
+		{
+			gotoxy(x+dist/2,y+1);
+			printf("\\");
+		}
+		exibe(raiz->esq, x-dist, y+2, dist/2);
+		exibe(raiz->dir, x+dist, y+2, dist/2);
+	}
+}
 
 //pré ordem RECURSIVO
 
