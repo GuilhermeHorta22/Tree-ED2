@@ -46,7 +46,7 @@ void push(Pilha **p, Tree *raiz)
 //funcao que retira da pilha
 void pop(Pilha **p, Tree **raiz)
 {
-	if(!isEmpty(*p))
+	if(!isEmptyPilha(*p))
 	{
 		Pilha *aux = *p;
 		*raiz = (*p)->no;
@@ -145,6 +145,26 @@ void quantidadeNoInt(Tree *raiz, int *qtde) //utiliza o pre ordem interativo
 }
 
 //buscar um nó da arvore de maneira INTERATIVA
+void buscarNo(Tree *raiz, int info, Tree **no)
+{	
+	if(raiz == NULL)
+	{
+		printf("\nArvore vazia!");
+		*no = NULL;
+	}
+	else
+	{
+		while(raiz != NULL && info != raiz->info)
+		{
+			if(info > raiz->info)
+				raiz = raiz->dir;
+			else
+				raiz = raiz->esq;
+		}
+		if(info == raiz->info)
+			*no = raiz;
+	}
+}
 
 
 //buscar um nó na arvore de maneira RECURSIVA
