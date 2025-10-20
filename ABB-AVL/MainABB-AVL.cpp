@@ -161,11 +161,39 @@ void buscarNo(Tree *raiz, int info, Tree **no)
 			else
 				raiz = raiz->esq;
 		}
-		if(info == raiz->info)
+		if(raiz != NULL && info == raiz->info)
 			*no = raiz;
+		else
+			*no = NULL;
 	}
 }
 
+//funcao que busca o pai de um no na arvore
+void buscarPai(Tree *raiz, int info, Tree **pai)
+{
+	if(raiz == NULL)
+	{
+		*pai = NULL;
+		printf("\nArvore vazia!");
+	}
+	else
+	{
+		Tree *auxPai = NULL;
+		while(raiz != NULL && info != raiz->info)
+		{
+			auxPai = raiz;
+			if(info > raiz->info)
+				raiz = raiz->dir;
+			else
+				raiz = raiz->esq;
+		}
+		
+		if(raiz != NULL)
+			*pai = auxPai;
+		else
+			*pai = NULL;
+	}
+}
 
 //buscar um nó na arvore de maneira RECURSIVA
 
