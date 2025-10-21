@@ -175,7 +175,7 @@ void buscarPai(Tree *raiz, int info, Tree **pai)
 	}
 	else
 	{
-		Tree *auxPai = NULL;
+		Tree *auxPai = raiz;
 		while(raiz != NULL && info != raiz->info)
 		{
 			auxPai = raiz;
@@ -271,7 +271,98 @@ quando um no tem 2 filhos e a exclusao for para o lado esquerdo temos que procur
 esquerdo e se caso for para direita temos que procurar o menor no da direita do no
 */
 
-//excluir um nodo da arvore
+//excluir um nodo da arvore 
+void exclusao(Tree **raiz, Tree *e, Tree *pai) //e = o nodo que queremos excluir
+{
+	if(e->esq == NULL && e->dir == NULL) //1 - no folha é quando ele não tem filhos
+	{
+		if(e != pai) // 1.1
+		{
+			if(e->info > pai->info) //1.1.1
+				pai->dir = NULL;
+			else //1.2
+				pai->esq = NULL;
+		}
+		else //1.2
+			*raiz = NULL;
+		free(e);
+	}
+	else
+	if(e->esq == NULL  || e->dir == NULL) //2 - o no tem pelo menos um filho
+	{
+		if(e != pai) //2.1
+		{
+			if(e->info > pai->info) //2.1.1
+			{
+				if(e->esq != NULL) //2.1.1.1
+					pai->dir = e->esq;
+				else
+				if(e->dir != NULL) //2.1.1.2
+					pai->dir = e->dir;
+			}
+			else //2.1.2
+			{
+				if(e->esq != NULL) //2.1.2.1
+					pai->esq = e->esq;
+				else
+				if(e->dir != NULL) //2.1.2.2
+					pai->esq = e->dir; 
+			}
+		}
+		else //2.2
+		{
+			if(e->esq != NULL) //2.2.1
+				*raiz = e->esq;
+			else
+			if(e->dir != NULL) //2.2.2
+				*raiz = e->dir;
+		}
+		free(e);
+	}
+	else // 3
+	{
+		int aux;
+		Tree *paiSub = e;
+		Tree *sub = e->dir;
+		
+		while(sub->esq != NULL)
+		{
+			paiSub = sub;
+			sub = sub->esq;
+		}
+		aux = sub->info;
+		exclusao(&*raiz, sub, paiSub);
+		e->info = aux;
+	}
+}
+
+//funcao principal para exclusao
+void excluirNo(Tree **raiz)
+{
+	int auxInfo;
+	Tree *e = NULL, *pai = NULL;
+	
+	printf("\nInfo para exclusao: ");
+	scanf("%d",&auxInfo);
+	
+	buscarPai(*raiz, auxInfo, &pai);
+	
+	if(pai != NULL) //achou
+	{
+		if(pai->esq->info == auxInfo) //se o valor que vamos excluir é o da direita
+			e = pai->esq;
+		else
+		if(pai->dir->info == auxInfo)
+			e = pai->dir;
+		
+		exclusao(&*raiz, e, pai);
+		
+		printf("\nExclusao finalizada!");
+		getch();
+	}
+	else
+		printf("\nInfo nao encontrada!");
+}
 
 //funcao que exibe uma arvore montada
 void exibe(Tree *raiz, int x, int y, int dist)
