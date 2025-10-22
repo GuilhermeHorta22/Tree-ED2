@@ -1,9 +1,8 @@
+#include<stdio.h>
 #include<stdlib.h>
 #include<conio2.h>
 #include<ctype.h>
 #include<string.h>
-
-#include "pilha.h"
 
 struct tree
 {
@@ -61,7 +60,7 @@ void pop(Pilha **p, Tree **raiz)
 //funcao que cria um novo nó para arvore
 Tree *criaNo(int info)
 {
-	Tree novo = (Tree*)malloc(sizeof(Tree));
+	Tree *novo = (Tree*)malloc(sizeof(Tree));
 	novo->info = info;
 	novo->esq = novo->dir = NULL;
 	return novo;
@@ -124,10 +123,10 @@ void quantidadeNo(Tree *raiz, int *qtde)
 void quantidadeNoInt(Tree *raiz, int *qtde) //utiliza o pre ordem interativo
 {
 	Pilha *p;
-	init(&p);
+	initPilha(&p);
 	push(&p, raiz);
 	
-	while(!isEmpty(p))
+	while(!isEmptyPilha(p))
 	{
 		pop(&p, &raiz);
 		
@@ -405,22 +404,19 @@ void pre_ordemInt(Tree *raiz)
 	initPilha(&p);
 	
 	push(&p, raiz);
-	while(!isEmpty(p))
+	while(!isEmptyPilha(p))
 	{
-		if(raiz != NULL)
+		pop(&p, &raiz);
+		while(raiz != NULL)
 		{
-			pop(&p, &raiz);
-			while(raiz != NULL)
-			{
-				printf("\n%d",raiz->info);
-				push(&p, raiz);
-				raiz = raiz->esq;
-			}
-			pop(&p, &raiz);
+			printf("\n%d", raiz->info);
+			push(&p, raiz);
 			raiz = raiz->esq;
-			if(raiz != NULL)
-				push(&p, raiz);
 		}
+		pop(&p, &raiz);
+		raiz = raiz->dir;
+		if(raiz != NULL)
+			push(&p, raiz);
 	}
 }
 
@@ -437,12 +433,12 @@ void pre_ordemInt(Tree *raiz)
 void posOrdemInt(Tree *raiz)
 {
 	Pilha *p1, *p2;
-	init(&p1);
-	init(&p2);
+	initPilha(&p1);
+	initPilha(&p2);
 	
 	push(&p1, raiz);
 	push(&p2, raiz);
-	while(!isEmpty(p1))
+	while(!isEmptyPilha(p1))
 	{
 		if(raiz != NULL)
 		{
@@ -461,7 +457,7 @@ void posOrdemInt(Tree *raiz)
 	}
 	
 	//apenas retira da pilha e exibe os valores na ordem certa
-	while(!isEmpty(p2))
+	while(!isEmptyPilha(p2))
 	{
 		pop(&p2, &raiz);
 		printf("\n%d", raiz->info);
@@ -472,11 +468,11 @@ void posOrdemInt(Tree *raiz)
 void posOrdemInt2(Tree *raiz)
 {
 	Pilha *p1, *p2;
-	init(&p1);
-	init(&p2);
+	initPilha(&p1);
+	initPilha(&p2);
 	push(&p1, raiz);
 	
-	while(!isEmpty(p1))
+	while(!isEmptyPilha(p1))
 	{
 		pop(&p1, &raiz);
 		push(&p2, raiz);
@@ -487,9 +483,171 @@ void posOrdemInt2(Tree *raiz)
 			push(&p1, raiz->dir);
 	}
 	
-	while(!isEmpty(p2))
+	while(!isEmptyPilha(p2))
 	{
 		pop(&p2, &raiz);
 		printf("\n%d",raiz->info);
 	}
+}
+
+//funcao com o menu para teste do programa
+char menu()
+{
+	system("cls");
+	printf("*** MENU DE OPCOES ABB ***");
+	printf("\n[A] - Inserir elemento na ABB");
+	printf("\n[B] - Exibe ABB montada");
+	printf("\n[C] - Exibe pre ordem");
+	printf("\n[D] - Exibe in ordem");
+	printf("\n[E] - Exibe pos ordem");
+	printf("\n[F] - Quantidade de no");
+	printf("\n[G] - Buscar no");
+	printf("\n[H] - Buscar pai no");
+	printf("\n[I] - Exclusao");
+	printf("\n[ESC] - Sair");
+	printf("\n\nOpcao: ");
+	return toupper(getche());
+}
+
+int main()
+{
+	Tree *raiz = NULL;
+	Tree *aux = NULL;
+	Tree *e = NULL;
+	Tree *pai = NULL;
+	
+	Pilha *p;
+	initPilha(&p);
+	
+	char op, opInterna;
+	int valor, x=60, y=1, dist=20, info, cont=0;
+	
+	do
+	{
+		op = menu();
+		system("cls");
+		switch(op)
+		{
+			case 'A':
+				printf("### INSERIR ELEMENTO NA ABB ###\n");
+				
+				printf("\n[A] - Inserir recursivo");
+				printf("\n[B] - Inserir interativo");
+				opInterna = toupper(getche());
+				
+				if(opInterna != 'A' && opInterna != 'B')
+					printf("\nNao existe essa opcao!");
+				else
+				{
+					printf("\nDigite um valor (0 - Sair):");
+					scanf("%d",&valor);
+					while(valor != 0)
+					{
+						if(opInterna == 'A')
+							inserirRec(&raiz, valor);
+						else
+							inserir(&raiz, valor);
+							
+						printf("\nDigite um valor (0 - Sair):");
+						scanf("%d",&valor);
+					}
+				}
+				
+				break;
+				
+			case 'B':
+				printf("### EXIBIR ARVORE MONTADA ###\n\n");
+				
+				exibe(raiz, x, y, dist);
+				
+				break;
+				
+			case 'C':
+				
+				
+				break;
+				
+			case 'D':
+				
+				
+				break;
+				
+			case 'E':
+				
+				
+				break;
+			
+			case 'F':
+				printf("### QUANTIDADE DE NO NA ARVORE ###\n");
+				
+				printf("\n[A] - Quantidade no recursivo");
+				printf("\n[B] - Quantidade no interativo");
+				opInterna = toupper(getche());
+				
+				if(opInterna != 'A' && opInterna != 'B')
+					printf("\nNao existe essa opcao!");
+				else
+				{
+					if(opInterna == 'A')
+						quantidadeNo(raiz, &cont);
+					else
+						quantidadeNoInt(raiz, &cont);
+						
+					printf("\nQuantidade de no = %d",cont);
+				}
+				
+				break;
+				
+			case 'G': //buscar no
+				printf("### BUSCAR NO NA ARVORE ###\n");
+				
+				printf("\n[A] - Buscar no recursivo");
+				printf("\n[B] - Buscar no interativo");
+				opInterna = toupper(getche());
+				
+				if(opInterna != 'A' && opInterna != 'B')
+					printf("\nNao existe essa opcao!");
+				else
+				{
+					printf("\nNo para ser buscado: ");
+					scanf("%d",&valor);
+					if(opInterna == 'A')
+						buscarNoRec(raiz, valor, &aux);
+					else
+						aux = buscarNo(raiz, valor);
+					
+					if(aux == NULL)
+						printf("\nNao foi encontrado o no.");
+					else
+						printf("\nNo encontrado: %d",aux->info);
+				}
+				
+				break;
+				
+			case 'H': //buscar no pai
+				printf("### BUSCAR PAI DE UM NO ###\n");
+				
+				printf("\nNo para buscar o pai: ");
+				scanf("%d",&valor);
+				
+				buscarPai(raiz, valor, &aux);
+				
+				if(aux == NULL)
+					printf("\nO no nao foi encontrado!");
+				else
+					printf("\nPai do no %d e = %d",valor, aux->info);
+				
+				break;
+				
+			case 'I': //exclusao
+				printf("### EXCLUSAO DE UM NO ###\n");
+				excluirNo(&raiz);
+				
+				break;
+					
+			case 27:
+				printf("\nPrograma encerrado!");
+		}
+		getch();
+	}while(op != 27);
 }
