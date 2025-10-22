@@ -388,10 +388,41 @@ void exibe(Tree *raiz, int x, int y, int dist)
 }
 
 //pré ordem RECURSIVO
-
+void pre_ordemRec(Tree *raiz)
+{
+	if(raiz != NULL)
+	{
+		printf("\n%d",raiz->info);
+		pre_ordemRec(raiz->esq);
+		pre_ordemRec(raiz->dir);
+	}
+}
 
 //pré ordem INTERATIVO
-
+void pre_ordemInt(Tree *raiz)
+{
+	Pilha *p;
+	initPilha(&p);
+	
+	push(&p, raiz);
+	while(!isEmpty(p))
+	{
+		if(raiz != NULL)
+		{
+			pop(&p, &raiz);
+			while(raiz != NULL)
+			{
+				printf("\n%d",raiz->info);
+				push(&p, raiz);
+				raiz = raiz->esq;
+			}
+			pop(&p, &raiz);
+			raiz = raiz->esq;
+			if(raiz != NULL)
+				push(&p, raiz);
+		}
+	}
+}
 
 //in ordem RECURSIVO
 
